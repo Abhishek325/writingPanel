@@ -1,0 +1,16 @@
+body{
+	margin:0;
+	padding:0;
+}
+
+#ajaxForm{
+	display:block;
+	margin:0 auto;
+	width: 500px; 
+	height:50px;
+	margin-top:10px;
+}
+
+#chatInput{
+	width: 454px;
+}

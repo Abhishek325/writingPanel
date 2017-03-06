@@ -1,0 +1,329 @@
+<?php
+include($Service->Config()->get_basepath().'/Views/VA/header.html');
+?>  
+<title>WriteJob - Mediawriting </title>
+<link href="/members/Static/VA/dist/summernote.css" rel="stylesheet">
+<script src="/members/Static/VA/dist/summernote.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:600" rel="stylesheet">
+<script  type='text/javascript' src='/members/Static/VA/js/typeahead.min.js'></script> 
+    <!-- include summernote css/js-->
+    <link href="/members/Static/VA/dist/summernote.css" rel="stylesheet">
+    <script src="/members/Static/VA/dist/summernote.js"></script>
+
+
+    <script type="text/javascript">
+    $(document).ready(function(){ 
+    $('input.typeahead').typeahead({ 
+            <?php  
+              echo "name: 'accounts', local: [";   
+                           $c = $Service->Prote()->DBI()->user()->common()->getUserNames(); 
+                           foreach($c as $data){   
+                            echo "'".$data->name."',"; 
+                           } 
+              echo "'']";     
+              echo "});"; 
+             ?>
+    }); 
+    </script>
+    <style type='text/css'>
+    .bs-example{
+      font-family: sans-serif;
+      position: relative;
+      margin: 100px;
+    }
+    .typeahead, .tt-query, .tt-hint {
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      color: #555;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .typeahead { 
+      background-color: #FFFFFF;
+    }
+    .typeahead:focus { 
+      border-radius: 4px;
+      border: 1px solid #0097CF;
+    }
+    .tt-query {
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;  
+    }
+    .tt-hint { 
+      color: #999999;
+    }
+    .tt-dropdown-menu {
+      background-color: #FFFFFF;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
+      padding: 8px 0;
+      width: 100%;
+    }
+
+    .tt-suggestion {
+      font-size: 16px;
+      line-height: 24px;
+      padding: 3px 20px;
+    }
+    .tt-suggestion.tt-is-under-cursor {
+      background-color: #0097CF; 
+      color: #FFFFFF;
+    }
+    .tt-suggestion p {
+      margin: 0;
+    }
+    </style>
+<style type="text/css">
+  #time
+  {
+    font-size:24px;
+    position:fixed;
+    right:30%;
+    z-index: 9999;
+    background: #f9f9f9;
+    padding: 1px 12px;
+    top:-1px;
+    border: 1px solid #ccc;
+    border-radius: 2px
+  }
+  .word_track
+  {
+    font-size:12px;
+    padding: 1%;  
+    position:fixed; 
+    right:2px;
+    z-index: 9999; 
+    color: #222;
+    font-family:"Open Sans", sans-serif; 
+    background: #f2f2f2;
+    border-radius: 100%; 
+    border: 1px solid #aaa;
+  }
+  .stat
+  {
+    font-size:10px;
+    font-family:"Open Sans", sans-serif; 
+    position: fixed;
+    right:10px;
+    padding: 2px;  
+    z-index:9999;
+    margin-top:4.6rem;
+    background: #f2f2f2;
+    border: 1px solid #bbb;
+  }
+</style>    
+<body style="height:650px;"> 
+    <div id='wrapper'> 
+        <div id='page-wrapper'>
+            <div class='container-fluid'>
+               <!-- Page Heading -->
+                <div class='row'>
+                    <div class='col-lg-12'> 
+                    <?php
+                    $_SESSION['jid'] = $jid;
+                      if(!$Service->Prote()->DBI()->user()->common()->submitted($jid,$_SESSION['userType']))
+                       echo "<a href='#' class='btn btn-warning' data-toggle='modal' data-target='#jobInfo' style='font-size:14px;float: right;'>Job description</a>";
+                       ?>
+                        <?php $data = $Service->Prote()->DBI()->user()->common()->getJobDet($jid);   
+                        echo "<h1 class='page-header' >".$data->jname."</h1>";    
+                        if(isset($Msg))
+                         echo $Msg; 
+                        if(isset($lastSaved))
+                          echo "<div style='margin-top:-1.5rem;display:inline;'>Last saved on : ".$lastSaved."</div>";
+                         if(!$Service->Prote()->DBI()->user()->common()->submitted($jid,$_SESSION['userType']))  
+                          echo "<form action='/members/addJobAttachment' method='post' enctype='multipart/form-data' style='display:inline;float:right;margin-bottom:10px;margin-top:-5%;'>
+                                   <input type='file' id='file' name='sample' style='display:inline;width:200px;border:1px solid #ccc;' required>     
+                                   <input type='hidden' name='jid' value='".$jid."'> 
+                                   <input type='hidden' name='uid' value='".$_SESSION['userId']."'> 
+                                   <button type='submit' class='btn btn-primary' style='padding:4px;font-size:12px;display:inline;'>Attach</button>
+                                   <button type='button' class='btn btn-default' style='padding:4px;font-size:12px;display:inline;' onclick='alert(\"This Attachment can be changed until the job is submitted\")'><b>?</b></button> 
+                                  </form>";   
+                        if($Service->Prote()->DBI()->user()->common()->getSubmitStatus($jid)!='Y')
+                        { 
+                        echo  "<div id='time' style='color:#e22;'></div>
+                         <div id='maxContentPost' class='word_track'>".$Service->Prote()->DBI()->user()->common()->getWordCount($jid)."</div>"; 
+                        }
+                        ?>
+                       <div class="stat" id="stat">Count</div>
+                     </div>    
+                        <div class="col-lg-12">   
+                        <form action="/members/save"  method="post">
+                        <textarea name="content" id="content" style="display: none;"></textarea>
+                        <input type="hidden" name="jid" value="<?php echo $jid;?>">
+                        <input type="hidden" name="uid" value="<?php echo $_SESSION['userId'];?>">
+                           <div id="summernote">
+                               <?php 
+                                if(isset($content))
+                                    echo $content;
+                               ?> 
+                           </div>  
+                           <?php
+                           if(!$Service->Prote()->DBI()->user()->common()->submitted($jid,$_SESSION['userType']))
+                           { 
+                            echo "<button type='submit' class='btn btn-success' id='saveJob' onclick='initText()' >Save job</button> 
+                            </form>";
+                           }
+                           if($link=$Service->Prote()->DBI()->user()->common()->getAttachmentMap($_SESSION['userId'],$jid))
+                            echo "File uploaded <b>:</b><a href='/members/".$link."'>Uploaded file</a>";
+                         ?>  
+                        <?php 
+                        if(!$Service->Prote()->DBI()->user()->common()->submitted($jid,$_SESSION['userType']))
+                         echo "<form action='/members/submit' onsubmit='return confirm(\"Are you sure you want to submit the job?\");' method='post' style='display:inline;float:right;'>
+                          <input type='hidden' name='jid' value='".$jid."'> 
+                          <input type='hidden' name='uid' value='".$_SESSION['userId']."'> 
+                          <input type='hidden' name='content' id='subContent'> 
+                          <button type='submit' class='btn btn-primary' id='submitBtn' onclick='mapContent()' id='submitJob'>Submit job</button></form>";
+                         ?>
+                        </div> 
+                </div>                  
+             </div>    
+        </div>    
+    </div>    
+    <script  type='text/javascript' src='/members/Static/VA/js/functions.js'></script>  
+    <script>
+        var max=5;//<?php echo $Service->Prote()->DBI()->user()->common()->getWordCount($jid);?>;
+        $('#summernote').summernote({  
+          toolbar: [
+        ['style', ['bold', 'italic', 'underline', 'clear']], 
+        ['fontsize', ['fontsize']],   
+        ['fontname', ['fontname']],     
+        ['color', ['color']],
+        ['para', ['ul', 'ol', 'paragraph']],
+        ['fullscreen', ['fullscreen']]
+         ], 
+          height: 250,                 // set editor height 
+          focus: true,                // set focus to editable area after initializing summernote  
+          placeholder: 'Write from here...',
+                    callbacks: { 
+                        onKeydown: function (e) {
+                            var t = e.currentTarget.innerText;
+                            $('#maxContentPost').text(t.trim().length);
+                            document.getElementById('stat').innerHTML='words';  
+                        },
+                        onPaste: function (e) {     
+                          var bufferText = ((e.originalEvent || e).clipboardData || window.clipboardData).getData('Text'); 
+                             document.execCommand('insertText', false, bufferText);
+                             var t = e.currentTarget.innerText;
+                            $('#maxContentPost').text(t.trim().length+bufferText.length);
+                            document.getElementById('stat').innerHTML='words';  
+                        } 
+                    }
+                });
+      </script>
+    <script type="text/javascript"> 
+      function initText()
+      {
+        document.getElementById('content').value =  $('#summernote').summernote('code');    
+      } 
+    </script>
+    <script type="text/javascript"> 
+      countDown();  
+      var ah=<?php echo $Service->Prote()->DBI()->user()->common()->getApplyHours($jid); ?>;
+      var am=<?php echo $Service->Prote()->DBI()->user()->common()->getApplyMinutes($jid); ?>;  
+      var asec=<?php echo $Service->Prote()->DBI()->user()->common()->getApplySeconds($jid); ?>;  
+      var wh=<?php echo $Service->Prote()->DBI()->user()->common()->getWJobTime($jid,'h'); ?>;
+      var wm=<?php echo $Service->Prote()->DBI()->user()->common()->getWJobTime($jid,'m'); ?>;  
+   function countDown()
+   {
+    var start = new Date;
+    var timeOut = 0;
+    start.setHours(ah+wh, am+wm, asec);
+    var now = new Date; 
+    //alert(now);
+    if (now > start) { // too late, go to tomorrow
+      //start.setDate(start.getDate() + 1);
+      //alert("time");
+      //disable save feature 
+      timeOut = 1;
+    }
+    var remain = ((start - now) / 1000);
+    var hh = pad((remain / 60 / 60) % 60);
+    var mm = pad((remain / 60) % 60);
+    var ss = pad(remain % 60);
+    if(isNaN(hh)||isNaN(mm)||isNaN(ss))
+      document.getElementById('time').innerHTML = "<small style='font-size:14px;'>Getting remaining time</small>";
+    else if(timeOut==1)
+    {
+      document.getElementById('file').disabled='true';
+      document.getElementById('time').innerHTML = document.getElementById('time').innerHTML = "00<small style='font-size:12px;'>Hrs</small> 00<small style='font-size:12px;'>Mins</small> 00<small style='font-size:12px;'>Sec</small>"; 
+      document.getElementById('saveJob').disabled='true'; 
+      $('#summernote').summernote('disable');
+      if(now.getSeconds()%2==0)
+      document.getElementById('time').innerHTML ="<small style='font-size:18px;'>Deadline reached.</small>";  
+    }
+    else
+     document.getElementById('time').innerHTML = hh + "<small style='font-size:12px;'>Hrs</small> " + mm + "<small style='font-size:12px;'>Mins</small> " + ss+ "<small style='font-size:12px;'>Sec</small>"; 
+     
+    setTimeout(countDown, 1000);
+   } 
+  function pad(num) {
+    return ("0" + parseInt(num)).substr(-2);
+  } 
+  function mapContent()
+  {
+    document.getElementById('subContent').value=$('#summernote').summernote('code');     
+  }
+    </script>   
+
+    <div class="modal fade" id="jobInfo" role="dialog">
+        <div class="modal-dialog"> 
+        <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Job details</h4>
+        </div>
+                <div class="modal-body" style="max-height:150px;overflow:auto;"> 
+                    <p><div class="col-lg-12">  
+                        <?php
+                         $data = $Service->Prote()->DBI()->user()->common()->getJobDet($jid);   
+                         echo   $data->jname.":<br>".$data->description."Employer:".$data->employer."<br>My amount:".$data->namount."<br>Base amount:".$data->bamount."<br>Tries allowed:".$data->tries."<br>Writer level:".$data->writer_level."<br>Created:".$data->created; 
+                       echo "</div>
+                    </p>
+                    </div>
+                    <div class='modal-footer'>  
+                       <a href='/members/".$data->file."' class='btn btn-success'>Attachment</a> ";
+                       ?>
+                       <button type="button" class="btn btn-alert" data-dismiss="modal">Close</button> 
+                      </form>  
+                    </div>
+                </div>
+             </div>
+        </div> 
+        <div style="height:300px;overflow:hidden;padding:0;bottom:0px;position:fixed;z-index:10000;right:1rem;background:#222;color:#fff;" id="MsgFrame">
+                  <div style="padding:7px;">Ask a question
+                  <div style="display:inline;float:right;font-size: 20px;margin-top:-0.8rem;">
+                  <input type="hidden" id="changeStat" value="-">
+                  <button style="background: none;outline: none;border:none;" id="Msgbtn" onclick="hideFrame()">-</button>
+                  </div>
+                  </div>
+                    <iframe src="/members/chat" style="height:98%;width:100%;border:1px solid #ccc;float:right;"></iframe> 
+                </div>  
+
+        <script type="text/javascript"> 
+        hideFrame();
+          function hideFrame()
+          {
+            var stat=document.getElementById('changeStat').value;
+            if(stat=='-')
+            { 
+             document.getElementById('MsgFrame').style.height="35px";
+             document.getElementById('Msgbtn').innerHTML="+";
+             document.getElementById('changeStat').value="+";
+           }
+           else
+             if(stat=='+')
+             {
+              document.getElementById('MsgFrame').style.height="300px";
+              document.getElementById('Msgbtn').innerHTML="-";
+              document.getElementById('changeStat').value="-";  
+             }
+
+          }
+        </script>
+</body>

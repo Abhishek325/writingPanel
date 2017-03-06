@@ -1,0 +1,98 @@
+<?php
+include($Service->Config()->get_basepath().'/Views/VA/header.html');
+?>   
+        <link href="/members/Static/VA/css/kendo.material.min.css" rel="stylesheet">  
+        <link href="/members/Static/VA/css/kendo.common.min.css" rel="stylesheet"> 
+        <script src="/members/Static/VA/js/jquery.min.js"></script>
+        <script src="/members/Static/VA/js/kendo.all.min.js"></script> 
+<title>Submitted jobs</title>
+<body> 
+    <div id="wrapper"> 
+        <div id="page-wrapper">
+            <div class="container-fluid">
+               <!-- Page Heading -->
+               <h1 class='page-header'>Submitted jobs</h2>
+                <div class="row">
+                 <div id="grid"></div>              
+                </div>    
+        </div>  
+        </div>    <br><br><br><br>
+        <input type="text" id="txtSearch" placeholder="Search">
+        <script  type='text/javascript' src='/members/Static/VA/js/functions.js'></script>  
+        <script>
+    $(function() {
+            $("#grid").kendoGrid({  
+                dataSource: {
+                    transport: {
+                        read: "/members/Views/VA/kendo/getJobList.php"
+                    },
+                    schema: {
+                        data: "data"
+                    },
+                    pageSize: 5, 
+                },
+                height: 230,  
+                filterable: {
+                            extra: false,
+                            operators: {
+                                string: {
+                                    contains : "Contains",
+                                    startswith: "Starts with",
+                                    eq: "Is equal to",
+                                    neq: "Is not equal to"
+                                }
+                            }
+                        },
+                sortable: true, 
+                pageable: {
+                    refresh: true,
+                    pageSizes: true,
+                    buttonCount: 3
+                },
+                columns: [{field: "JobId" ,filterable:false},{ field: "Employer",filterable:{ui: employerFilter}},{ field: "Job",template: '<a href="/members/adminJobView?jid=#=JobId#" target="_blank">#=Job#</a>'},{ field: "Level"},{field:"Writer"},{field:"Amount",filterable:false},{ field: "submitted_on",filterable:false},{ field: "Status",filterable:{ui: statusFilter} },{ field: "Retries" }]
+            });
+        });     
+        function statusFilter(element) { 
+                      element.kendoDropDownList({
+                      dataSource: new kendo.data.DataSource({
+                        transport: {
+                        read: "/members/Views/VA/kendo/getStatus.php"
+                    },
+                    schema: {
+                        data: "data"
+                    }   
+                }),
+                dataTextField: "Status",
+                dataValueField: "Status",
+                optionLabel: "Select status", 
+                });
+                }
+
+        function employerFilter(element) { 
+                      element.kendoDropDownList({
+                      dataSource: new kendo.data.DataSource({
+                        transport: {
+                        read: "/members/Views/VA/kendo/getEmployer.php"
+                    },
+                    schema: {
+                        data: "data"
+                    }   
+                }),
+                dataTextField: "Employer",
+                dataValueField: "Employer",
+                optionLabel: "Select employer", 
+                });
+                }
+
+        $(function() {
+            $("#grid").kendoGrid({
+                selectable: "multiple row",
+                 navigatable: true,
+                 resizable: true
+            });
+            }); 
+    
+    </script> 
+</body>
+
+

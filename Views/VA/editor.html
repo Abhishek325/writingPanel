@@ -1,0 +1,56 @@
+ <?php
+include($Service->Config()->get_basepath().'/Views/VA/header.html');
+?>   
+<title>Editor's dashboard</title>
+<body> 
+<div id="wrapper"> 
+        <div id="page-wrapper" style="height:700px;"> 
+            <div class="container-fluid"> 
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2 class="page-header">
+                            Welcome <?php echo $_SESSION['userName']; ?>,
+                        </h2> 
+                    </div>
+                </div> 
+  </ul> 
+                    <div class="col-sm-4">
+                          <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">View jobs</h3>
+                            </div>
+                            <div class="panel-body">   
+                             <a href="/~mediawriting/members/editor-jobs-view" class="btn btn-primary">All jobs</a>
+                            </div>
+                        </div> 
+                        </div> 
+
+        <div class="modal fade" id="addEditor" role="dialog">
+        <div class="modal-dialog"> 
+        <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add an editor here</h4>
+        </div>
+        <div class="modal-body" style="height:250px;"> 
+                    <p><div class="col-lg-8  col-md-offset-2">  
+                    <form action="/~mediawriting/members/addEditor" method="post">
+                              <div class="form-group input-group">
+                              <input type="email" class="form-control" name="email" maxlength="200" placeholder="Editor's email" required>   
+                               <input type="text" class="form-control" name="edname" maxlength="200" placeholder="Editor's full name" required>   
+                               <input type="text" class="form-control" name="ename" maxlength="200" placeholder="Editor's user name" required>   
+                               <input type="password" class="form-control" name="password" maxlength="200" pattern=".{8,}" placeholder="Editor's password" required>    
+                              </div>    
+                    </div></p>
+                    <div class="modal-footer" style="border:none;">  
+                       <button type="submit"  class="btn btn-success" >Add editor</button>  
+                      </form>  
+                    </div>
+                </div>
+             </div>
+        </div>
+
+ <script  type='text/javascript' src='/~mediawriting/members/Static/VA/js/functions.js'></script>    
+</body>
+</html>

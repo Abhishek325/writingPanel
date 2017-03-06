@@ -1,0 +1,99 @@
+<?php
+include($Service->Config()->get_basepath().'/Views/VA/header.html');
+?>  
+<title>My jobs</title>
+<body> 
+    <div id="wrapper"> 
+        <div id="page-wrapper">
+            <div class="container-fluid">
+               <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header" >
+                            Waiting for approval
+                        </h1>     
+                        <?php  
+                        $c = $Service->Prote()->DBI()->user()->common()->getMySubmittedJobs($_SESSION['userId'],'NA'); 
+                        if($c)
+                        {  
+                         echo "<div class='table-responsive'>
+                              <table class='table table-bordered table-hover table-striped'>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>   
+                                        <th>Job title</th> 
+                                        <th>Job Type</th>
+                                        <th>Base rate</th>
+                                        <th>My rate</th>
+                                        <th>Duration</th>
+                                        <th>View content</th>
+                                        </tr>
+                                </thead>
+                                <tbody>"; 
+                                 foreach($c as $data)
+                                  { 
+                                    echo"<tr>
+                                        <td>".$data->jid."</td>     
+                                        <td>".$data->jname."</td>
+                                        <td>".$data->jtype."</td>
+                                        <td>".$data->bamount."</td>
+                                        <td>".$data->namount  ."</td>
+                                        <td>".$Service->Prote()->DBI()->user()->common()->getJobDuration($data->jid)."</td>
+                                        <td><a href='/members/viewJob?jid=".base64_encode(base64_encode(openssl_encrypt(strtolower($data->jid),"AES-256-CBC",hash("sha256", "Abh1sh3k"),0,substr(hash("sha256",base64_encode(session_id())), 0,16))))."' class='btn btn-primary'>View here </a></td>
+                                        </tr>";
+                                  }  
+                                echo "</tbody>
+                            </table>
+                         </div>";
+                         }  
+                         else
+                          echo "No Jobs to display";
+                         ?>
+                         <h1 class="page-header" >
+                            Approved jobs
+                        </h1>   
+                        <?php
+                          $c = $Service->Prote()->DBI()->user()->common()->getMySubmittedJobs($_SESSION['userId'],'Y'); 
+                        if($c)
+                        {  
+                         echo "<div class='table-responsive'>
+                              <table class='table table-bordered table-hover table-striped'>
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>   
+                                        <th>Job title</th> 
+                                        <th>Job Type</th>
+                                        <th>My income</th>
+                                        <th>Rating (on 5)</th>
+                                        <th>Comment</th>
+                                        <th>View content</th> 
+                                      </tr>
+                                </thead>
+                                <tbody>"; 
+                                 foreach($c as $data)
+                                  { 
+                                    echo"<tr>
+                                        <td>".$data->jid."</td>     
+                                        <td>".$data->jname."</td>
+                                        <td>".$data->jtype."</td>
+                                        <td>".$data->namount."</td>
+                                        <td>".$Service->Prote()->DBI()->user()->common()->getRating($data->jid)."</td>
+                                        <td>".$Service->Prote()->DBI()->user()->common()->getComment($data->jid)."</td>
+                                        <td><a href='/members/viewJob?jid=".base64_encode(base64_encode(openssl_encrypt(strtolower($data->jid),"AES-256-CBC",hash("sha256", "Abh1sh3k"),0,substr(hash("sha256",base64_encode(session_id())), 0,16))))."' class='btn btn-primary'>View here </a></td>
+                                        </tr>";
+                                  }  
+                                echo "</tbody>
+                            </table>
+                         </div>";
+                         }  
+                         else
+                          echo "No Jobs to display"; 
+                        ?>
+
+                     </div>    
+                </div>                  
+             </div>    
+        </div>    
+    </div>    
+    <script  type='text/javascript' src='/members/Static/VA/js/functions.js'></script>  
+</body>

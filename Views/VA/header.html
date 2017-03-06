@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head> 
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">  
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css"> 
+    <link href="/members/Static/VA/css/bootstrap.min.css" rel="stylesheet"> 
+    <!-- Custom CSS -->
+    <link href="/members/Static/VA/css/sb-admin.css" rel="stylesheet"> 
+    <!-- Custom Fonts -->
+    <link href="/members/Static/VA/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> 
+    <style type="text/css">   
+    </style>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#"><?php echo $_SESSION['userType']."<small style='font-size:10px;'>LoginPanel</small>";?></a>
+            </div>
+            <!-- Top Menu Items --> 
+            <ul class="nav navbar-right top-nav"> 
+            <?php 
+                 if($_SESSION['userType']=='S'||$_SESSION['userType']=='W')
+                 { 
+                  echo " 
+                  <li class='dropdown'>
+                    <a href='#' class='dropdown-toggle' data-toggle='dropdown'>My menu<b class='caret'></b></a>
+                    <ul class='dropdown-menu alert-dropdown'>
+                        <li>
+                            <a href='/members/jobs'>Select jobs</a>
+                        </li> 
+                        <li>
+                            <a href='/members/submitJob'>Submit jobs</a>
+                        </li>
+                        <li>
+                            <a href='/members/myJobs'>My jobs</a>
+                        </li> 
+                    </ul>
+                  </li>";
+                  }
+                  else if($_SESSION['userType']=='E')
+                  {
+                   echo " 
+                  <li class='dropdown'>
+                    <a href='#' class='dropdown-toggle' data-toggle='dropdown'>Editor menu<b class='caret'></b></a>
+                    <ul class='dropdown-menu alert-dropdown'>
+                        <li>
+                            <a href='#' data-toggle='modal' data-target='#addEditor'>Add Editor</a>
+                        </li> 
+                        <li>
+                            <a href='/members/payWriters'>Pay writersList</a>
+                        </li>
+                        <li>
+                            <a href='/members/Job'>Jobs</a>
+                        </li> 
+                    </ul>
+                  </li>";
+                  }
+                ?>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-envelope"></i> <b class="caret"></b></a>
+                    <?php 
+                    if($_SESSION['userType']=='A')
+                    { 
+                     if($count=$Service->Prote()->DBI()->user()->common()->getAdminMsgCount())
+                     echo "<span class='badge bg-warning' id='notiCount' style='
+                      margin-top:-4.5rem;float:right;margin-right:3.5rem;'>".$count."</span> ";
+                      ?>
+                    <ul class="dropdown-menu message-dropdown">
+                        <?php 
+                        if($count)
+                        { 
+                         $c = $Service->Prote()->DBI()->user()->common()->getAdminMsg(); 
+                         foreach($c as $data)
+                         { 
+                          echo "<li class='message-preview' style='padding:7px;'> 
+                                    <div class='media-body'>
+                                        <h5 class='media-heading'>
+                                          <strong>".$data->title."</strong>
+                                        </h5> 
+                                        <p>".$data->noti."</p>
+                                        <form action='/members/removeNoti' method='post' style=' display: inline'>
+                                          <input type='hidden' name='nid' value='".$data->nid."'> 
+                                          <button type='submit' style='background:none;padding:0;float: right;border:none;margin-top: -1rem;'><i class='fa fa-close'></i></button>
+                                           </form> 
+                                    </div>  
+                          </li>";
+                         }
+                        }
+                          else
+                            echo "<li class='message-preview' style='padding:7px;'>No new messages to display.</li>";
+                      ?> 
+                    </ul>
+                    <?php } 
+                    else if($_SESSION['userType']=='W'||$_SESSION['userType']=='S')
+                    { 
+                     if($count=$Service->Prote()->DBI()->user()->common()->getUserMsgCount($_SESSION['userId']))
+                     echo "<span class='badge bg-warning' id='notiCount' style='
+                      margin-top:-4.5rem;float:right;margin-right:3.5rem;'>".$count."</span> ";
+                      ?>
+                    <ul class="dropdown-menu message-dropdown">
+                        <?php 
+                        if($count)
+                        { 
+                         $c = $Service->Prote()->DBI()->user()->common()->getUserMsg($_SESSION['userId']); 
+                         foreach($c as $data)
+                         { 
+                          echo "<li class='message-preview' style='padding:7px;'> 
+                                    <div class='media-body'>
+                                        <h5 class='media-heading'>
+                                          <strong>".$data->title."</strong>
+                                        </h5> 
+                                        <p>".$data->noti."</p>
+                                        <form action='/members/removeUserNoti' method='post' style=' display: inline'>
+                                          <input type='hidden' name='nid' value='".$data->nid."'> 
+                                          <button type='submit' style='background:none;padding:0;float: right;border:none;margin-top: -1rem;'><i class='fa fa-close'></i></button>
+                                           </form> 
+                                    </div>  
+                          </li>";
+                         }
+                        }
+                          else
+                            echo "<li class='message-preview' style='padding:7px;'>No new messages to display.</li>";
+                      ?> 
+                    </ul>
+                    <?php } ?>
+                </li>
+                <li class="dropdown"> 
+                        <?php
+                        if($_SESSION['userType']=='A')
+                        {
+                         $c = $Service->Prote()->DBI()->user()->common()->getAdminNotis(); 
+                         if($c)
+                         { 
+                          foreach($c as $data){ 
+                            echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown'><i class='fa fa-bell'></i> <b class='caret'></b></a>";
+                            if($data->count>0)
+                            echo "<span class='badge bg-warning' id='notiCount' style='
+                                  margin-top:-4.5rem;float:right;margin-right:3.5rem;'>".$data->count."</span> 
+                                  <ul class='dropdown-menu alert-dropdown'>
+                                  <li>
+                                <div class='media' style='padding:7px;'>
+                               <b>".$data->title."</b><br>".$data->noti."
+                                          <form action='/members/removeNoti' method='post' style=' display: inline'>
+                                          <input type='hidden' name='nid' value='".$data->nid."'> 
+                                          <button type='submit' style='background:none;padding:0;float: right;border:none;margin-top: -1rem;'><i class='fa fa-close'></i></button>
+                                           </form> 
+                                           </div>
+                                           </li>";   
+                          }
+                          if($data->count>0)
+                          echo "</ul>";
+                         }      
+                        }  
+                        if($_SESSION['userType']=='S'||$_SESSION['userType']=='W')
+                        {
+                         $c = $Service->Prote()->DBI()->user()->common()->getUserNotis($_SESSION['userId']); 
+                         if($c)
+                         { 
+                          foreach($c as $data){ 
+                            echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown'><i class='fa fa-bell'></i> <b class='caret'></b></a>";
+                            if($data->count>0)
+                            echo "<span class='badge bg-warning' id='notiCount' style='
+                                  margin-top:-4.5rem;float:right;margin-right:3.5rem;'>".$data->count."</span> 
+                                  <ul class='dropdown-menu alert-dropdown'>
+                                  <li>
+                                <div class='media' style='padding:7px;'>
+                                <b>".$data->title." </b>
+                                          <p style='max-height:100px; overflow: auto;'>".$data->noti."
+                                          <form action='/members/removeUserNoti' method='post' style=' display: inline'>
+                                          <input type='hidden' name='nid' value='".$data->nid."'> 
+                                          <button type='submit' style='background:none;padding:0;float: right;border:none;margin-top: -2.5rem;margin-right: 20px;'><i class='fa fa-close'></i></button>
+                                           </form></p>
+                                           </div></li>"; 
+                          }
+                          if($data->count>0)
+                          echo "</ul>";
+                         } 
+                        }    
+                        ?> 
+                </li> 
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><?php echo "&nbsp;".$_SESSION['userName'];?><b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#profile"><i class="fa fa-fw fa-user"></i>Profile</a>
+                        </li> 
+                        <li>
+                            <a href="#" data-toggle="modal" data-target="#changePwd"><i class="fa fa-fw fa-gear"></i>Settings</a>
+                        </li> 
+                        <li>
+                         <form action='/members/logout' method='post'>
+                          <input type='hidden' value='<?php echo $Service->Html()->auth_token; ?>' name='auth_token'>
+                          <button type='submit' style="background: none;border: none;padding: 3px 20px;outline: none;"><i class="fa fa-fw fa-power-off"></i> Log Out</button>
+                         </form> 
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li class="active">
+                        <a href="/members/dashboard"><i class="fa fa-fw fa-dashboard"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="/members/myTransactions"><i class="fa fa-fw fa-bar-chart-o"></i> Transactions</a>
+                    </li>
+                    <!--
+                    <li>
+                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
+                    </li>
+                    <li>
+                        <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>
+                    </li>-->
+                    <?php 
+                     if($_SESSION['userType']=='A')
+                     { 
+                      echo "
+                      <li>
+                        <a href='/members/admin_system_configure'><i class='fa fa-fw fa-desktop'></i> Configure</a>
+                     </li>   ";
+                    }
+                    ?>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </nav> 
+
+        <!--change password-->
+        <div class="modal fade" id="changePwd" role="dialog">
+        <div class="modal-dialog"> 
+        <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Change password for your account</h4>
+        </div>
+                <div class="modal-body" style="height:150px;"> 
+                    <p><div class="col-lg-6  col-md-offset-3">  
+                        <form role="form" action="/members/changePwd" method="post">   
+                          <div class="form-group">
+                           <input placeholder='Enter your old password' class="form-control" type='password' name='prepwd' pattern=".{8,}" id="opwd" style="margin-bottom:2px;" required> 
+                           <input id="password1" placeholder="New password" maxlength="25" class="form-control" type="password" name="npwd1" pattern=".{8,}"  style="margin-bottom:2px;" required>
+                           <input id="password2" placeholder="Repeat new password" maxlength="25" class="form-control" type="password" name="npwd2" pattern=".{8,}" required></div>     
+                    </div></p>
+                    </div>
+                    <div class="modal-footer">  
+                            <button type='submit' class="btn btn-success">Change password</button>
+                              <button type="button" class="btn btn-alert" data-dismiss="modal">Close</button> 
+                      </form>  
+                    </div>
+                </div>
+             </div>
+        </div>
+
+        <!--Profile-->
+        <div class="modal fade" id="profile" role="dialog">
+        <div class="modal-dialog"> 
+        <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Profile info</h4>
+        </div>
+                <div class="modal-body" style="height:200px;">  
+                    <div class="col-lg-6">  
+                     Full name : <?php echo $_SESSION['userName'];?><br>
+                     Username @mediawriting : <?php echo $_SESSION['uname'];?><br>
+                     Email : <?php 
+                     echo "
+                     <form action='/members/changeEmail' method='post'>
+                     <input type='email' name='email' class='form-control'  value='".$Service->Prote()->DBI()->user()->common()->getEmail($_SESSION['userId'])."'>
+                     <button type='submit'><i class='fa fa-check'></i></button>
+                     </form>";
+                    if($_SESSION['userType']=='S'||$_SESSION['userType']=='W') 
+                    { 
+                     echo "Average rating :<br>
+                     Earnings :<br>
+                     Checkout Limit :<br>
+                     Checkout(s) left :   <br>
+                     Level : ".$Service->Prote()->DBI()->user()->common()->getUserLevel($_SESSION['userId'])."<br>
+                     Unapproved jobs :<br>
+                     24 Hour checkout left :";
+                    }
+                    ?>
+                    </div> 
+                    </div>
+                    <div class="modal-footer">   
+                       <button type="button" class="btn btn-alert" data-dismiss="modal">Close</button>  
+                    </div>
+                </div>
+             </div>
+        </div>
+<script src='/members/Static/VA/js/ajax.jquery.min.js'></script>
+<script  type='text/javascript' src='/members/Static/VA/js/bootstrap.min.js'></script>

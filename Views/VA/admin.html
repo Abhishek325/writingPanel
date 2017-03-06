@@ -1,0 +1,298 @@
+<?php
+include($Service->Config()->get_basepath().'/Views/VA/header.html');
+?> 
+<title>Admin's dashboard</title>
+   <style type="text/css">        
+    .panel-body
+    {
+      max-height: 200px;
+      overflow: auto;
+    }
+    </style>
+    <script  type='text/javascript' src='/members/Static/VA/js/typeahead.min.js'></script> 
+    <script type="text/javascript">
+    $(document).ready(function(){ 
+    $('input.typeahead').typeahead({
+      <?php  
+        echo "name: 'accounts', local: [";   
+        if($Service->Prote()->DBI()->user()->common()->getUserCount()>1)
+        {  
+         $c = $Service->Prote()->DBI()->user()->common()->getSpecUser("E"); 
+         foreach($c as $data){ 
+          //echo $row['value'];
+          echo "'".$data->uname."',";
+         }     
+       }
+        echo "'']";     
+        echo "});"; 
+       ?>
+    });
+    </script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type='text/css'>
+    .bs-example{
+      font-family: sans-serif;
+      position: relative;
+      margin: 100px;
+    }
+    .typeahead, .tt-query, .tt-hint {
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      color: #555;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .typeahead { 
+      background-color: #FFFFFF;
+    }
+    .typeahead:focus { 
+      border-radius: 4px;
+      border: 1px solid #0097CF;
+    }
+    .tt-query {
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;  
+    }
+    .tt-hint { 
+      color: #999999;
+    }
+    .tt-dropdown-menu {
+      background-color: #FFFFFF;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
+      padding: 8px 0;
+      width: 100%;
+    }
+
+    .tt-suggestion {
+      font-size: 16px;
+      line-height: 24px;
+      padding: 3px 20px;
+    }
+    .tt-suggestion.tt-is-under-cursor {
+      background-color: #0097CF; 
+      color: #FFFFFF;
+    }
+    .tt-suggestion p {
+      margin: 0;
+    }
+    .panel-body
+    {
+      height: 200px;
+      overflow: auto;
+    }
+    </style>
+</head> 
+<body> 
+
+<div id="wrapper"> 
+        <div id="page-wrapper"> 
+            <div class="container-fluid"> 
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2 class="page-header">
+                            Welcome <?php echo $_SESSION['userName']; ?>,
+                        </h2> 
+                        <?php 
+                        if(isset($Msg))
+                        {
+                         echo $Msg;
+                          
+                        }
+                        ?>
+                    </div>
+                </div>
+                <!-- /.row -->    
+      <!--Block/Unblock
+        <form action="/members/blkunblk" method="post">
+        <input class='typeahead tt-query' type='text' name="userName" required>
+        <button type="submit">Go</button>
+        </form>
+      </li>-->
+      <div class="row">
+                          <div class="col-sm-4">
+                          <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Manage writers</h3>
+                            </div>
+                            <div class="panel-body">  
+                            <a href="/members/Job" class="btn btn-primary" style="font-size:14px;">Add job</a>
+                            <a class="btn btn-primary" href='/members/submitted-jobs'>Approve Job</a> 
+                            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addEmpl">Add Employer</a> 
+                            <a href="/members/ViewJobs" class="btn btn-primary" style="font-size:14px;margin:2px;">View jobs</a>
+                            <hr>   
+                            <li>Promote/Demote</li>      
+      <li>Checkout limit</li> 
+      <li>See transaction</li> 
+      <li>Can see down</li> 
+    </ul> </div></div> 
+ </p>
+ </div>     
+
+ <div class="col-sm-4">
+                    <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Manage tip | announcement</h3> 
+                            </div>
+                            <div class="panel-body">  
+                            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addAnnouncement" style="">Add announcement</a> 
+                            <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#addTip" style="">Add Tip</a> 
+                            <hr>
+                            <a class="btn btn-primary" href="/members/mngAnnouncements">Manage announcements</a>
+                            <a class="btn btn-primary" href="/members/mngTips">Manage tips</a> 
+                      </div>
+                        </div> 
+                        </div>                              
+     <div class="col-sm-4" >
+                          <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Manage editors<a href="#" class="btn btn-info" data-toggle="modal" data-target="#addEditor" style="font-size:14px;float: right;margin-bottom: 2px;margin-top: -0.8rem;">Add Editor</a> </h3>
+                            </div>
+                            <div class="panel-body"> 
+     <form action="/members/mngEditor" method="post"> 
+     <div class="form-group input-group">
+                                <input class='typeahead tt-query' type='text' placeholder="Editor name" name="edname" style='color:#222;' required>
+                                <span class="input-group-addon" style="padding:0;line-height:0;background:none;border:none;">
+                                 <button type="sumit" class="btn btn-info">Go</button>
+                                </span>
+                        </div> 
+      </form> 
+     <li>See Transactions</li>  
+                            </div>
+                        </div> 
+                        </div>  
+     <div class="modal fade" id="addTip" role="dialog">
+        <div class="modal-dialog"> 
+        <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add a tip here</h4>
+        </div>
+                <div class="modal-body" style="height:200px;"> 
+                    <p><div class="col-lg-6  col-md-offset-3">  
+                    <form method="post" action="/members/addTip">   
+                          <div class="form-group">
+                          <input type="text" class="form-control" name="tipTitle" autocomplete="off" maxlength="100" placeholder="Tip title" required>  
+                          <select class="form-control" name="type" onblur="checkVal(1)" required>
+                          <option value="-1">Tip is meant for..</option>
+                          <option value="S">Startup</option>
+                          <option value="W">Writer</option>
+                          </select>
+                         <textarea class="form-control" rows="3" name="tipContent" placeholder="Tip content" required></textarea>
+                          </div>     
+                    </div></p>
+                    </div>
+                    <div class="modal-footer">  
+                            <button type='submit' class="btn btn-success">Add tip</button>
+                            <button type="button" class="btn btn-alert" data-dismiss="modal">Close</button> 
+                      </form>  
+                    </div>
+                </div>
+             </div>
+        </div>
+
+        <div class="modal fade" id="addEmpl" role="dialog">
+        <div class="modal-dialog"> 
+        <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add an employer here</h4>
+        </div>
+                <div class="modal-body" style="height:250px;"> 
+                    <p><div class="col-lg-6  col-md-offset-3">  
+                      <form action="/members/addEmployer" method="post">    
+                        <div class="form-group">  
+                        <input type="text" class="form-control" name="ename" maxlength="200" placeholder="Employer's full name" required>
+                        <input type="text" class="form-control" name="efrom" maxlength="200" placeholder="Employer is from ?" required>
+                        <input type="text" class="form-control" name="link" maxlength="200" placeholder="Employe's link">
+                        <textarea name="info" class="form-control" maxlength="200" rows="4" placeholder="Employer's info" required>
+                        </textarea>
+                        </div>     
+                    </div></p>
+                    </div>
+                    <div class="modal-footer">  
+                       <button type="submit"  class="btn btn-success" >Add</button> 
+                       <button type="button" class="btn btn-alert" data-dismiss="modal">Close</button> 
+                      </form>  
+                    </div>
+                </div>
+             </div>
+        </div>
+
+        <div class="modal fade" id="addAnnouncement" role="dialog">
+        <div class="modal-dialog"> 
+        <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add an announcement here</h4>
+        </div>
+                <div class="modal-body" style="height:150px;"> 
+                    <p><div class="col-lg-6  col-md-offset-3">  
+                      <form action="/members/addAnnouncement" method="post">    
+                        <div class="form-group"> 
+                        <select class="form-control" name="type" onblur="checkVal(1)" required>
+                          <option value="-1">Announcement is meant for..</option>
+                          <option value="S">Startup</option> 
+                          <option value="W">Writer</option>
+                          </select>
+                         <textarea class="form-control" rows="3" placeholder="Announcement" name="announcement" id="announcement" required></textarea> 
+                        </div>     
+                    </div></p>
+                    </div>
+                    <div class="modal-footer">  
+                       <button type="submit"  class="btn btn-success" >Announce</button> 
+                       <button type="button" class="btn btn-alert" data-dismiss="modal">Close</button> 
+                      </form>  
+                    </div>
+                </div>
+             </div>
+        </div>
+
+        <div class="modal fade" id="addEditor" role="dialog">
+        <div class="modal-dialog"> 
+        <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add an editor here</h4>
+        </div>
+        <div class="modal-body" style="height:250px;"> 
+                    <p><div class="col-lg-8  col-md-offset-2">  
+                    <form action="/members/addEditor" method="post">
+                              <div class="form-group input-group">
+                              <input type="email" class="form-control" name="email" maxlength="200" placeholder="Editor's email" required>   
+                               <input type="text" class="form-control" name="edname" maxlength="200" placeholder="Editor's full name" required>   
+                               <input type="text" class="form-control" name="ename" maxlength="200" placeholder="Editor's user name" required>   
+                               <input type="password" class="form-control" name="password" maxlength="200" pattern=".{8,}" placeholder="Editor's password" required>    
+                              </div>    
+                    </div></p>
+                    <div class="modal-footer" style="border:none;">  
+                       <button type="submit"  class="btn btn-success" >Add editor</button>  
+                      </form>  
+                    </div>
+                </div>
+             </div>
+        </div> 
+
+
+ <script  type='text/javascript' src='/members/Static/VA/js/functions.js'></script>     
+ <script type="text/javascript"> 
+   //Add announcement button function 
+  //Add employer button function
+   $('#addEmployerBtn').click(function(e){   
+     addEmployer(); 
+  });  
+ </script>
+</body>
+</html>

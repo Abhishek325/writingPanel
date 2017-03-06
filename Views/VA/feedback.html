@@ -1,0 +1,35 @@
+<?php
+include($Service->Config()->get_basepath().'/Views/VA/header.html');
+?> 
+<title>Feedback</title> 
+</head>   
+<body> 
+    <div id="wrapper"> 
+        <div id="page-wrapper" style="height:700px;">
+            <div class="container-fluid">
+               <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header" >
+                            Leave feedback for TechTage
+                        </h1> 
+                        Share your experience! Your honest feedback provides helpful information  to both the writer and admin.<br>Provide your rating (<b>out of 5</b>) based on following parameters<br>
+                        <div class="col-lg-2" style="margin-left:-1rem;">
+                        <form action="/members/feedback" method="post" onsubmit="return confirm('Are your sure?');">
+                        <input type='number' placeholder='Unique content' min='0' max="5" class='form-control' name='  f1' required autocomplete="off">
+                        <input type='number' placeholder='Spelling' min='0' max="5" class='form-control' name='f2' required autocomplete="off">
+                        <input type='number' placeholder='Grammar' min='0' max="5" class='form-control' name='f3' required autocomplete="off">
+                        <input type='number' placeholder='Sentence construction' min='0' max="5" class='form-control' name='f4' required autocomplete="off">
+                        <input type='number' placeholder='Quality and flow' min='0' max="5" class='form-control' name='f5' required autocomplete="off">
+                        <input type='number' placeholder='Instructions followed' min='0' max="5" class='form-control' name='f6' required  autocomplete="off">
+                        <?php 
+                        echo " 
+                          <input type='hidden' name='jid' value='".$jid."'>
+                          <input type='hidden' name='uid' value='".$uid."'>
+                         ";
+                         ?>
+                        <textarea class="form-control" placeholder="Share your experince with this writer to admin" style="width:250px;height: 100px;" required autocomplete="off" name="comment"></textarea>
+                        <button type="submit" class="btn btn-success">Submit</button>
+                        <a href="/members/payWriters" class="btn btn-primary">Back</a>
+
+</body>

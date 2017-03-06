@@ -1,0 +1,268 @@
+<?php
+include($Service->Config()->get_basepath().'/Views/VA/header.html');
+?> 
+<title>Configure</title>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400' rel='stylesheet'>
+<script  type='text/javascript' src='/members/Static/VA/js/typeahead.min.js'></script> 
+    <script type="text/javascript">
+    $(document).ready(function(){ 
+    $('input.typeahead').typeahead({
+      <?php  
+        echo "name: 'accounts', local: [";   
+        if($Service->Prote()->DBI()->user()->common()->getJobTypeCount()>0)
+        {  
+         $c = $Service->Prote()->DBI()->user()->common()->getJobType(); 
+         foreach($c as $data){ 
+          //echo $row['value'];
+          echo "'".$data->jtype."',";
+         }     
+       }
+        echo "'']";     
+        echo "});"; 
+       ?>
+    });
+    </script>
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type='text/css'>
+    .bs-example{
+      font-family: sans-serif;
+      position: relative;
+      margin: 100px;
+    }
+    .typeahead, .tt-query, .tt-hint {
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      color: #555;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .typeahead { 
+      background-color: #FFFFFF;
+    }
+    .typeahead:focus { 
+      border-radius: 4px;
+      border: 1px solid #0097CF;
+    }
+    .tt-query {
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;  
+    }
+    .tt-hint { 
+      color: #999999;
+    }
+    .tt-dropdown-menu {
+      background-color: #FFFFFF;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
+      padding: 8px 0;
+      width: 100%;
+    }
+
+    .tt-suggestion {
+      font-size: 16px;
+      line-height: 24px;
+      padding: 3px 20px;
+    }
+    .tt-suggestion.tt-is-under-cursor {
+      background-color: #0097CF; 
+      color: #FFFFFF;
+    }
+    .tt-suggestion p {
+      margin: 0;
+    }
+    .table-responsive
+    {
+      max-height: 250px;
+      overflow: auto;
+      margin-bottom: 1.5rem;
+    }
+    </style>
+</head> 
+<body> 
+    <div id="wrapper"> 
+        <div id="page-wrapper">
+            <div class="container-fluid">
+               <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h3 class="page-header" >
+                            Job types
+                        </h3>    
+                        <div class='table-responsive col-lg-6'>
+                              <table class='table table-bordered table-hover table-striped'>
+                                <thead>
+                                    <tr>
+                                        <th>Job tpye 
+                                         <a href="#" data-toggle="modal" data-target="#jobtype" style="float:right;">
+                                         <i class="fa fa-fw fa-user"></i>Add job type</a>
+                                        </th> 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                <?php 
+                                if($Service->Prote()->DBI()->user()->common()->getJobTypeCount()>0)
+                                { 
+                                 $c = $Service->Prote()->DBI()->user()->common()->getJobType();
+                                 $i=0;   
+                                 foreach($c as $data) 
+                                 {  
+                                  echo "<tr><td style='padding:0;'>
+                                  <div class='col-sm-8'>
+                                         <form action='/members/updateJobType' method='post'>
+                                         <div class='form-group input-group'>
+                                         <input type='hidden' name='jtid' value='".$data->jtid."'>
+
+                                         <input type='text' name='jtype' class='form-control' value='".$data->jtype."' style='border:none;border-bottom-style:1px solid #ccc;font-size:16px;margin-top: 5px;font-family: \"Open Sans\", sans-serif;'required>
+                                         <span class='input-group-addon' style='padding:0;line-height:0;background:none;border:none;'> 
+                                         <button type='submit' class='btn btn-primary'><i class='fa fa-check' ></i></button>
+                                          </span>
+                                          </div>   
+                                       </form></td></tr>"; 
+                                  } 
+                                }
+                                ?>
+                                </tr> 
+                               </tbody>
+                            </table>
+                         </div>  
+                         <div class='table-responsive col-lg-6'> 
+                              <table class='table table-bordered table-hover table-striped'>
+                                <thead>
+                                    <tr>
+                                        <th>Writer level 
+                                         <a href="#" data-toggle="modal" data-target="#level" style="float:right;"> Add writer level</a>
+                                        </th> 
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                <?php 
+                                if($Service->Prote()->DBI()->user()->common()->getLevelCount()>0)
+                                { 
+                                 $c = $Service->Prote()->DBI()->user()->common()->getLevel();
+                                 $i=0;   
+                                 foreach($c as $data) 
+                                 {  
+                                  echo "<tr><td style='padding:0;'> 
+                                         <div class='col-sm-8'>
+                                         <form action='/members/updateLevel' method='post'>
+                                         <div class='form-group input-group'>
+                                         <input type='hidden' name='lid' value='".$data->lid."'>
+
+                                         <input type='text' name='level' class='form-control' value='".$data->level."' style='border:none;border-bottom-style:1px solid #ccc;font-size:16px;margin-top: 5px;font-family: \"Open Sans\", sans-serif;'required>
+                                         <span class='input-group-addon' style='padding:0;line-height:0;background:none;border:none;'> 
+                                          <button type='submit' class='btn btn-primary'><i class='fa fa-check' ></i></button>
+                                          </span>
+                                          </div>   
+                                       </form></td>";
+                                  } 
+                                }
+                                ?>
+                                </tr> 
+                               </tbody>
+                            </table>
+                         </div>
+                         <div class='table-responsive col-lg-6'> 
+                              <table class='table table-bordered table-hover table-striped'>
+                                <thead>
+                                    <tr>
+                                        <th>Employer List  
+                                        </th> 
+                                    </tr>
+                                </thead>
+                                <tbody> 
+                                <?php 
+                                if($Service->Prote()->DBI()->user()->common()->getEmployerCount()>0)
+                                { 
+                                 $c = $Service->Prote()->DBI()->user()->common()->getEmployerList();
+                                 $i=0;   
+                                 foreach($c as $data) 
+                                 {  
+                                  echo "<tr><td> ". $data->ename." <small>(from: ".$data->efrom.")<br>
+                                         ".$data->otherinfo." ".$data->elink."</small>
+                                         <div class='col-sm-2' style='padding:2px;display:inline;float:right;margin-right:2px;'>
+                                         <form action='/members/removeEmployer' method='post' >
+                                         <div class='form-group input-group'>
+                                         <input type='hidden' name='eid' value='".$data->eid."'> 
+                                          <button type='submit' class='btn btn-primary' style='padding: 2px;
+                                            font-size: 10px;border: none;background: none;color: #000;'><i class='fa fa-close' ></i></button> 
+                                          </div>   
+                                       </form></td></tr>";
+                                  } 
+                                }
+                                ?> 
+                               </tbody>
+                            </table>
+                         </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Job type-->
+        <div class="modal fade" id="jobtype" role="dialog">
+        <div class="modal-dialog"> 
+        <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add a job type</h4>
+        </div>
+                <div class="modal-body" style="height:75px;">  
+                    <div class="col-lg-6 col-md-offset-3">  
+                     <form action="/members/addJobType" method="post">
+                      <div class="form-group input-group">
+                               <input type="text" class="form-control typeahead tt-query" name="jtype" maxlength="200" placeholder="Job type">  
+                                <span class="input-group-addon" style="padding:0;line-height:0;background:none;border:none;"> 
+                               <button type="submit" class="btn btn-primary" style="margin-top:-5px">Add</button>
+                              </span>
+                       </div>   
+                     </form>
+                    </div> 
+                    </div>
+                    <div class="modal-footer">   
+                       <button type="button" class="btn btn-alert" data-dismiss="modal">Close</button>  
+                    </div>
+                </div>
+             </div>
+        </div>
+        <!--Job type-->
+        <div class="modal fade" id="level" role="dialog">
+        <div class="modal-dialog"> 
+        <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Add a writer level</h4>
+        </div>
+                <div class="modal-body" style="height:300px;">  
+                    <div class="col-lg-6 col-md-offset-3">  
+                     <form action="/members/addLevel" method="post">  
+                               <input type="text" class="form-control" name="wlevel" maxlength="200" placeholder="Writer level" required>
+                               <input type="number" class="form-control" name="words" maxlength="10" placeholder="Words" required>
+                                 <input type="number" class="form-control" name="rank" maxlength="10" placeholder="Rank" required>
+                                <input type="number" class="form-control" name="hlimit" maxlength="20" placeholder="24 hour Limit" required>
+                                <input type="number" class="form-control" name="climit" maxlength="20" placeholder="Checkout limit" required>
+                                <input type="number" class="form-control" name="btime" maxlength="200" placeholder="Block time" required>  
+                                <input type="number" class="form-control" name="namount" maxlength="200" placeholder="Normal amount" required>  
+                    </div> 
+                    </div>
+                    <div class="modal-footer">   
+                       <button type="button" class="btn btn-alert" data-dismiss="modal">Close</button>  
+                               <button type="submit" class="btn btn-primary" style="margin-top:-5px">Add level</button>
+                     </form>
+                    </div>
+                </div>
+             </div>
+        </div>
+    </body>

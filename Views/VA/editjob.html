@@ -1,0 +1,188 @@
+<?php
+include($Service->Config()->get_basepath().'/Views/VA/header.html');
+?> 
+<title>Edit job</title>
+    <script  type='text/javascript' src='/members/Static/VA/js/typeahead.min.js'></script> 
+    <!-- include summernote css/js-->
+    <link href='/members/Static/VA/dist/summernote.css' rel='stylesheet'>
+    <script src='/members/Static/VA/dist/summernote.js'></script>
+
+
+    <script type='text/javascript'>
+    $(document).ready(function(){ 
+    $('input.typeahead').typeahead({ 
+            <?php  
+              echo "name: 'accounts', local: [";  
+              if($Service->Prote()->DBI()->user()->common()->getEmployerCount()>0)
+                          {  
+                           $c = $Service->Prote()->DBI()->user()->common()->getEmployerList(); 
+                           foreach($c as $data){   
+                            echo "'".$data->ename."',";
+                            }       
+                           } 
+              echo "'']";     
+              echo '});'; 
+             ?>
+    }); 
+    </script>
+    <style type='text/css'>
+    .bs-example{
+      font-family: sans-serif;
+      position: relative;
+      margin: 100px;
+    }
+    .typeahead, .tt-query, .tt-hint {
+      display: block;
+      width: 100%;
+      height: 34px;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      color: #555;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .typeahead { 
+      background-color: #FFFFFF;
+    }
+    .typeahead:focus { 
+      border-radius: 4px;
+      border: 1px solid #0097CF;
+    }
+    .tt-query {
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;  
+    }
+    .tt-hint { 
+      color: #999999;
+    }
+    .tt-dropdown-menu {
+      background-color: #FFFFFF;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 5px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2); 
+      padding: 8px 0;
+      width: 100%;
+    }
+
+    .tt-suggestion {
+      font-size: 16px;
+      line-height: 24px;
+      padding: 3px 20px;
+    }
+    .tt-suggestion.tt-is-under-cursor {
+      background-color: #0097CF; 
+      color: #FFFFFF;
+    }
+    .tt-suggestion p {
+      margin: 0;
+    }
+    </style>
+</head>   
+<body> 
+    <div id='wrapper'> 
+        <div id='page-wrapper'>
+            <div class='container-fluid'>
+               <!-- Page Heading -->
+                <div class='row'>
+                    <div class='col-lg-12'>
+                        <h1 class='page-header' >
+                            Edit job (Id:<?php echo $jid;?>)
+                        </h1>
+                        <?php 
+                        if(isset($Msg))
+                        {
+                         echo $Msg;
+                          
+                        }
+                        $c=$Service->Prote()->DBI()->user()->common()->getJobDetails($jid); 
+                        foreach($c as $data)
+                        { 
+                        echo " 
+                      <div class='col-lg-8 col-md-offset-1'><!-- col-md-offset-3-->
+                        <form action='/members/saveJob' method='post' enctype='multipart/form-data'>  
+                        <input class='form-control' type='text' name='name' id='jobname' placeholder='Job name' value=".$data->jname." required> 
+                        <input type='text' class='typeahead tt-query form-control'  type='text' name='employer' placeholder='Employer name' value=".$data->employer." required> 
+                                <select class='form-control' name='type' id='type' required>";  
+                                  if($Service->Prote()->DBI()->user()->common()->getJobTypeCount()>0)
+                                  {  
+                                   $c = $Service->Prote()->DBI()->user()->common()->getJobType(); 
+                                   foreach($c as $data2){  
+                                    echo "<option value=" .$data->jtype.">".$data2->jtype."</option>";
+                                    }       
+                                   }  
+                          echo "</select> 
+               <input class='form-control' type='number' name='pay' value='".$data->epay."' id='epay' placeholder='Employer's pay' required>
+               <input type='hidden' name='jid' value=".$jid.">
+               <textarea  name='description' id='description' required style='display: none;'></textarea> 
+               <!-- summernotenote area start --> 
+                <div id='desc'><div id='summernote'>".$data->description."</div></div>  
+          <!-- Summernote area end --> 
+                <select class='form-control' name='writer'  onchange='getWriterFields(this.value)' id='writer' required>"; 
+                    if($Service->Prote()->DBI()->user()->common()->getLevelCount()>0)
+                    {  
+                     $c = $Service->Prote()->DBI()->user()->common()->getLevel(); 
+                     foreach($c as $data1){  
+                      echo "<option value=".$data->level.">".$data1->level."</option>";
+                      }
+                     }        
+                   echo "</select>
+                   <script type='text/javascript'>
+                  document.getElementById('type').value='';
+                  document.getElementById('writer').value='';
+                </script>
+    <div class='row'>                  
+     <div class='col-lg-16'>         
+      <div class='col-lg-6'>         
+       <input class='form-control' type='number' id='words' value=".$data->words." name='words' placeholder='Word count for job' required>
+      </div>
+      <div class='col-lg-6'>         
+       <input class='form-control' type='number' id='tries' value=".$data->tries."  name='tries' placeholder='No. tries allowed' required>
+      </div>
+      <div class='col-lg-16'>         
+      <div class='col-lg-6'>         
+        <input class='form-control' type='number' id='namount' value=".$data->namount." name='namount' placeholder='Net amount' required>
+      </div>
+      <div class='col-lg-6'>         
+       <input class='form-control' type='number' id='bamount' value=".$data->bamount." name='bamount' placeholder='Basic amount' required>
+      </div>
+      <div class='col-lg-6'>          
+        <input class='form-control' type='number' name='hours' value=".$data->hour." placeholder='Hours' required>              
+      </div>
+      <div class='col-lg-6'>         
+        <input class='form-control' type='number' name='minutes' value=".$data->minute." placeholder='Minutes' required>    
+      </div>
+      <div class='col-lg-6'>   
+        <div id='flabel'><small>Select sample file</small></div>
+        <input type='file' id='file' class='form-control' name='sample'>    
+        <input type='hidden' name='uploadFile' id='uploadFile' value='Y'>   
+      </div> 
+      <input type='submit' name='submit' onclick='initText()' class='btn btn-success' style='float: right;margin-right:15px;' value='Save Job'>
+      <a href='/members/dashboard' class='btn btn-default' style='float: right;'>Go back</a>&nbsp;
+    </form>
+    </div>
+    </div>
+    </div>
+    </div>";
+         }
+        ?>
+    </div>   
+        </div><br><br><br><br>
+    <script  type='text/javascript' src='/members/Static/VA/js/functions.js'></script>  
+     <script>
+        $('#summernote').summernote({
+          height: 150,                 // set editor height
+          minHeight: null,             // set minimum height of editor
+          maxHeight: null,             // set maximum height of editor
+          focus: false,                  // set focus to editable area after initializing summernote
+          placeholder: 'Enter description of job...'
+        });
+      </script>
+    <script type='text/javascript'>
+      function initText()
+      {
+        document.getElementById('description').value =  $('#summernote').summernote('code');   
+      } 
+    </script>
+</body>
